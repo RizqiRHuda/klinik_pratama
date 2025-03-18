@@ -12,7 +12,11 @@ $(document).ready(function() {
             { data: 'alamat', name: 'alamat' },
             { data: 'no_hp', name: 'no_hp' },
             { data: 'tgl_lahir', name: 'tgl_lahir' },
-            { data: 'jk', name: 'jk' },
+            { data: 'jk', name: 'jk' ,
+                render: function(data, type, row) {
+                    return data === 'L' ? 'Laki-laki' : 'Perempuan';
+                }
+            },
             { data: 'pekerjaan', name: 'pekerjaan' },
             { data: 'riwayat_alergi', name: 'riwayat_alergi' },
             {
@@ -22,8 +26,8 @@ $(document).ready(function() {
                 searchable: false,
                 render: function(data, type, row) {
                     return `
-                        <button class="btn btn-warning btn-sm edit" data-id="${data}">Edit</button>
-                        <button class="btn btn-danger btn-sm delete" data-id="${data}">Hapus</button>
+                        <button class="btn btn-warning btn-sm edit" data-id="${data}"> <i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-danger btn-sm delete" data-id="${data}"><i class="fas fa-trash"></i> Hapus</button>
                     `;
                 }
             }
@@ -89,7 +93,10 @@ $(document).ready(function() {
         $.get("{{ url('pasien/edit') }}/" + id, function(data) {
             $('#modalEdit').modal('show');
             $('#edit_id').val(data.id);
+            $('#edit_no_rm').val(data.no_rm);
+            $('#edit_nik').val(data.nik);
             $('#edit_nama_pasien').val(data.nama_pasien);
+            $('#edit_tgl_lahir').val(data.tgl_lahir);
             $('#edit_alamat').val(data.alamat);
             $('#edit_no_hp').val(data.no_hp);
             $('#edit_jk').val(data.jk);
@@ -122,38 +129,37 @@ $(document).ready(function() {
 
     // **🔹 Event Klik Hapus**
     $('#data-pasien').on('click', '.delete', function() {
-    let id = $(this).data('id');
-    Swal.fire({
-        title: "Hapus Data?",
-        text: "Data akan dihapus secara permanen!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Ya, Hapus!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "{{ url('pasien/hapus') }}/" + id,
-                type: "POST", // 🔹 Gunakan POST, bukan DELETE
-                data: {
-                    _method: 'DELETE', // 🔹 Laravel butuh metode ini untuk DELETE
-                    _token: $('meta[name="csrf-token"]').attr('content') // 🔹 Tambahkan token di data
-                },
-                success: function(response) {
-                    Swal.fire("Berhasil!", "Data telah dihapus.", "success");
-                    table.ajax.reload();
-                },
-                error: function(xhr) {
-                    Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus data.", "error");
-                    console.error(xhr.responseText); // 🔹 Debugging
+            let id = $(this).data('id');
+            Swal.fire({
+                title: "Hapus Data?",
+                text: "Data akan dihapus secara permanen!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, Hapus!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('pasien/hapus') }}/" + id,
+                        type: "POST", // 🔹 Gunakan POST, bukan DELETE
+                        data: {
+                            _method: 'DELETE', // 🔹 Laravel butuh metode ini untuk DELETE
+                            _token: $('meta[name="csrf-token"]').attr('content') // 🔹 Tambahkan token di data
+                        },
+                        success: function(response) {
+                            Swal.fire("Berhasil!", "Data telah dihapus.", "success");
+                            table.ajax.reload();
+                        },
+                        error: function(xhr) {
+                            Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus data.", "error");
+                            console.error(xhr.responseText); // 🔹 Debugging
+                        }
+                    });
                 }
             });
-        }
+        });
     });
-});
-
-});
 
 
 </script>

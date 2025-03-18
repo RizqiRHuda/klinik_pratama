@@ -93,7 +93,7 @@
             
                 <!-- Tombol Submit di Tengah -->
                 <div class="row">
-                    <div class="col-12 d-flex gap-2 justify-content-end">
+                    <div class="col-12 d-flex gap-2 justify-content-between">
                         <button type="reset" class="btn btn-secondary mt-3 btn-sm">Reset</button>
                         <button type="submit" class="btn btn-primary mt-3 btn-sm">Simpan</button>
                     </div>

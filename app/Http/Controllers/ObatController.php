@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Imports\ObatImport;
 use App\Models\Obat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\ObatImport;
+use Yajra\DataTables\Facades\DataTables;
 
 class ObatController extends Controller
 {
@@ -18,7 +19,7 @@ class ObatController extends Controller
     public function getObat(Request $request)
     {
         if ($request->ajax()) {
-            $obat = Obat::select(['id', 'nama_obat', 'stock_awal', 'pemakaian', 'pemasukan', 'stock_akhir', 'min_stock', 'satuan',  'status_stock']);
+            $obat = Obat::select(['id', 'nama_obat', 'stock_awal', 'pemakaian', 'pemasukan', 'stock_akhir', 'min_stock', 'satuan', 'status_stock']);
 
             return DataTables::of($obat)
                 ->addIndexColumn()
@@ -78,11 +79,62 @@ class ObatController extends Controller
     public function importObat(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx, csv'
+            'file' => 'required|mimes:xlsx, csv',
         ]);
 
         Excel::import(new ObatImport, $request->file('file'));
         return redirect()->back()->with('success', 'Data obat berhasil diimpor!');
+    }
+
+    public function edit($id)
+    {
+        $obat = Obat::findOrFail($id);
+        return response()->json($obat);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $data = $request->validate([
+                'nama_obat'   => 'required|string',
+                'stock_awal'  => 'required|integer',
+                'pemakaian'   => 'required|integer',
+                'pemasukan'   => 'required|integer',
+               
+                'min_stock'   => 'required|integer',
+                'satuan'      => 'required|string',
+            ]);
+
+            $obat = Obat::findOrFail($id);
+            $data['stock_akhir'] = $data['stock_awal'] + $data['pemasukan'] - $data['pemakaian'];
+            $obat->update($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil diperbarui',
+                'data'    => $obat,
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui data',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        $obat = Obat::findOrFail($id);
+        $obat->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 
 }

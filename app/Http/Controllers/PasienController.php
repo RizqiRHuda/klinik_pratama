@@ -43,15 +43,15 @@ class PasienController extends Controller
         $query = Pasien::select([
             'id', 'no_rm', 'nama_pasien', 'nik', 'alamat', 'no_hp',
             'tgl_lahir', 'jk', 'pekerjaan', 'riwayat_alergi',
-        ]);
+        ])->orderBy('id', 'desc');
 
         return DataTables::of($query)
             ->addIndexColumn() // Menambahkan nomor otomatis
             ->addColumn('action', function ($row) {
-                return '<button class="btn btn-sm btn-warning edit" data-id="' . $row->id . '">Edit</button>
-                    <button class="btn btn-sm btn-danger delete" data-id="' . $row->id . '">Hapus</button>';
+                return '<button class="btn btn-sm btn-warning edit" data-id="' . $row->id . '"> <i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-sm btn-danger delete" data-id="' . $row->id . '"><i class="fas fa-trash"></i> Hapus</button>';
             })
-            ->rawColumns(['action']) // Mengizinkan kolom action berisi HTML
+            ->rawColumns(['action'])
             ->make(true);
     }
 
@@ -64,17 +64,25 @@ class PasienController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->validate([
+            'no_rm'          => 'required|string',
+            'nik'            => 'required|string',
             'nama_pasien'    => 'required|string|max:255',
             'alamat'         => 'required|string',
             'pekerjaan'      => 'required|string|max:100',
             'no_hp'          => 'required|string|digits_between:6,15', // Memastikan hanya angka 10-15 digit
             'riwayat_alergi' => 'nullable|string',
+            'jk'             => 'required|in:L,P',
+            'tgl_lahir'      => 'required|date',
         ]);
 
         $pasien = Pasien::findOrFail($id);
         $pasien->update($data);
 
-        return response()->json(['message' => 'Data berhasil diperbarui']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diperbarui',
+            'data'    => $pasien,
+        ], 200);
     }
 
     public function destroy($id)

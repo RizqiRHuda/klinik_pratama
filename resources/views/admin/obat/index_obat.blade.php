@@ -92,6 +92,7 @@
       </div>
   </div>
 </div>
+@include('admin.obat.edit_obat')
     @push('scripts')
     <script>
        $(document).ready(function() {
@@ -128,7 +129,18 @@
                         `;
                     }
                 },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
+                { 
+                    data: 'id',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `
+                            <button class="btn btn-warning btn-sm edit" data-id="${data}"> <i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn btn-danger btn-sm delete" data-id="${data}"><i class="fas fa-trash"></i> Hapus</button>
+                        `;
+                    }
+             }
             ]
         });
 
@@ -161,7 +173,75 @@
             });
         });
 
+        $('#table-obat').on('click', '.edit', function(){
+            let id = $(this).data('id');
+            $.get("{{ url('obat/edit') }}/" + id, function(data) {
+                $('#modalEditObat').modal('show');
+                $('#edit_id').val(data.id);
+                $('#edit_nama_obat').val(data.nama_obat);
+                $('#edit_stock_awal').val(data.stock_awal);
+                $('#edit_pemakaian').val(data.pemakaian);
+                $('#edit_pemasukan').val(data.pemasukan);
+              
+                $('#edit_min_stock').val(data.min_stock);
+                $('#edit_satuan').val(data.satuan);
+            });
+        });
+
+        $('#formEditObat').on('submit', function(e) {
+            e.preventDefault();
+            let id = $('#edit_id').val();
+            let formData = $(this).serialize();
+
+            $.ajax({
+                url: "{{ url('obat/update') }}/" + id,
+                method: "PUT",
+                data: formData,
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(response) {
+                    Swal.fire("Berhasil!", "Data telah diperbarui.", "success");
+                    $('#modalEditObat').modal('hide');
+                    table.ajax.reload();
+                },
+                error: function() {
+                    Swal.fire("Gagal!", "Terjadi kesalahan saat memperbarui data.", "error");
+                }
+            });
+        });
+
+        $('#table-obat').on('click', '.delete', function() {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: "Hapus Data?",
+                text: "Data akan dihapus secara permanen!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, Hapus!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('obat/hapus') }}/" + id,
+                        type: "POST", // 🔹 Gunakan POST, bukan DELETE
+                        data: {
+                            _method: 'DELETE', // 🔹 Laravel butuh metode ini untuk DELETE
+                            _token: $('meta[name="csrf-token"]').attr('content') // 🔹 Tambahkan token di data
+                        },
+                        success: function(response) {
+                            Swal.fire("Berhasil!", "Data telah dihapus.", "success");
+                            table.ajax.reload();
+                        },
+                        error: function(xhr) {
+                            Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus data.", "error");
+                            console.error(xhr.responseText); // 🔹 Debugging
+                        }
+                    });
+                }
+            });
+        });
     });
+    
     </script>
     @endpush
 @endsection

@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ObatController;
-use App\Http\Controllers\PasienController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ObatController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PasienController;
+use App\Http\Controllers\TerapiController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/', function () {
@@ -38,6 +39,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/simpan-obat', [ObatController::class, 'simpanObat'])->name('obat.simpan-obat');
         Route::get('/get-obat', [ObatController::class, 'getObat'])->name('obat.get-obat');
         Route::post('/import-obat', [ObatController::class, 'importObat'])->name('obat.import-obat');
+        Route::get('edit/{id}', [ObatController::class, 'edit'])->name('obat.edit-obat');
+        Route::put('update/{id}', [ObatController::class, 'update'])->name('obat.update-obat');
+        Route::delete('hapus/{id}', [ObatController::class, 'destroy'])->name('obat.hapus-obat');
     });
 
     Route::prefix('pasien')->group(function () {
@@ -47,6 +51,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('edit/{id}', [PasienController::class, 'edit'])->name('pasien.edit-pasien');
         Route::put('update/{id}', [PasienController::class, 'update'])->name('pasien.update-pasien');
         Route::delete('hapus/{id}', [PasienController::class, 'destroy'])->name('pasien.hapus-pasien');
+    });
 
+    Route::prefix('terapi')->group(function () {
+        Route::get('/page-terapi', [TerapiController::class, 'index'])->name('terapi.page-terapi');
+        Route::get('/cari-pasien/{no_rm}', [TerapiController::class, 'cariPasien'])->name('terapi.cari-pasien');
+        
+       
     });
 });

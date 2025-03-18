@@ -18,12 +18,16 @@
                         <!-- Bagian Kiri -->
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label class="form-label">No. RM</label>
+                                <input type="text" class="form-control" id="edit_no_rm" name="no_rm" readonly>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Nama Pasien</label>
                                 <input type="text" class="form-control" id="edit_nama_pasien" name="nama_pasien">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Alamat</label>
-                                <textarea class="form-control" id="edit_alamat" name="alamat"></textarea>
+                                <label class="form-label">Tgl Lahir</label>
+                                <input type="text" class="form-control" id="edit_tgl_lahir" name="tgl_lahir">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">No HP</label>
@@ -33,6 +37,10 @@
 
                         <!-- Bagian Kanan -->
                         <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">NIK</label>
+                                <input type="text" class="form-control" id="edit_nik" name="nik" readonly>
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label">Jenis Kelamin</label>
                                 <select class="form-control" id="edit_jk" name="jk">
@@ -48,6 +56,10 @@
                                 <label class="form-label">Riwayat Alergi</label>
                                 <textarea class="form-control" id="edit_riwayat_alergi" name="riwayat_alergi"></textarea>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alamat</label>
+                            <textarea class="form-control" id="edit_alamat" name="alamat"></textarea>
                         </div>
                     </div>
                 </div>

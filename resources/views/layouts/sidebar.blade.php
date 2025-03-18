@@ -28,7 +28,21 @@
                     </a>
                 </li>
 
-                <li class="pc-item pc-caption">
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-vaccine"></i></span><span class="pc-mtext">Terapi</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ route('terapi.page-terapi') }}">Form Terapi</a></li>
+                    </ul>
+                </li>
+
+                <li class="pc-item">
+                    <a href="{{ route('obat.page-obat') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-bandage"></i> </span>
+                        <span class="pc-mtext">Obat</span>
+                    </a>
+                </li>
+
+                {{-- <li class="pc-item pc-caption">
                     <label>Other</label>
                     <i class="ti ti-brand-chrome"></i>
                 </li>
@@ -37,7 +51,7 @@
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{ route('obat.page-obat') }}">Obat</a></li>
                     </ul>
-                </li>
+                </li> --}}
                 {{-- <li class="pc-item pc-hasmenu">
                     <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span
                             class="pc-mtext">Menu

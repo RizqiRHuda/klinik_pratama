@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalObat" tabindex="-1" aria-labelledby="modalObatLabel" style="display: none;" inert>
+<div class="modal fade" id="modalObat" tabindex="-1" aria-labelledby="modalObatLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
@@ -59,18 +59,4 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-    $(document).ready(function () {
-        $("#modalObat").on("show.bs.modal", function () {
-            $(this).removeAttr("inert"); // Hapus inert agar bisa diakses
-        });
 
-        $("#modalObat").on("hidden.bs.modal", function () {
-            $(this).attr("inert", ""); // Tambahkan inert agar modal tidak bisa diakses
-            $(this).find(':focus').blur(); // Pastikan tidak ada elemen dalam modal yang retain focus
-            $('#openModalButton').focus(); // Kembalikan fokus ke tombol pembuka modal (sesuaikan ID)
-        });
-    });
-</script>
-@endpush
