@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Exports\ObatExport;
 use App\Imports\ObatImport;
 use App\Models\Obat;
 use Illuminate\Http\Request;
@@ -96,16 +97,16 @@ class ObatController extends Controller
     {
         try {
             $data = $request->validate([
-                'nama_obat'   => 'required|string',
-                'stock_awal'  => 'required|integer',
-                'pemakaian'   => 'required|integer',
-                'pemasukan'   => 'required|integer',
-               
-                'min_stock'   => 'required|integer',
-                'satuan'      => 'required|string',
+                'nama_obat'  => 'required|string',
+                'stock_awal' => 'required|integer',
+                'pemakaian'  => 'required|integer',
+                'pemasukan'  => 'required|integer',
+
+                'min_stock'  => 'required|integer',
+                'satuan'     => 'required|string',
             ]);
 
-            $obat = Obat::findOrFail($id);
+            $obat                = Obat::findOrFail($id);
             $data['stock_akhir'] = $data['stock_awal'] + $data['pemasukan'] - $data['pemakaian'];
             $obat->update($data);
 
@@ -135,6 +136,14 @@ class ObatController extends Controller
         $obat->delete();
 
         return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+
+    public function export()
+    {
+        $tanggal  = date('Y-m-d'); 
+        $namaFile = "daftar_obat_{$tanggal}.xlsx";
+
+        return Excel::download(new ObatExport, $namaFile);
     }
 
 }

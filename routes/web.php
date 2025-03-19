@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('edit/{id}', [ObatController::class, 'edit'])->name('obat.edit-obat');
         Route::put('update/{id}', [ObatController::class, 'update'])->name('obat.update-obat');
         Route::delete('hapus/{id}', [ObatController::class, 'destroy'])->name('obat.hapus-obat');
+        Route::get('/export-obat', [ObatController::class, 'export'])->name('obat.export-obat');
     });
 
     Route::prefix('pasien')->group(function () {

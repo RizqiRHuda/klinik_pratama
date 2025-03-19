@@ -25,13 +25,15 @@
     <div class="col-xl-12">
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Tabel Obat</h5>
+            <h5 class="mb-0">Daftar Data Obat</h5>
             <div>
               <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalObat">
                 <i class="fas fa-file-alt"></i> Tambah
               </button>
-             
                 <button type="button" class="btn btn-info btn-sm"  data-bs-toggle="modal" data-bs-target="#uploadExcelModal"> <i class="fas fa-file-excel me-1"></i> Upload Excel</button>
+                <a href="{{ route('obat.export-obat') }}" class="btn btn-success btn-sm">
+                    <i class="fas fa-download me-1"></i> Export Excel
+                </a>
             </div>
         </div>
         
