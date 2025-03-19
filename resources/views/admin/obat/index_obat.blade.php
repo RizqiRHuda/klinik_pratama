@@ -174,11 +174,35 @@
                 dataType: "json",
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire("Berhasil!", response.message, "success");
-                        $("#modalObat").modal('hide');
-                        table.draw(false);
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Data berhasil disimpan!',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                        // Tutup modal setelah toast muncul
+                        let modalElement = document.getElementById('modalObat');
+                        let modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+
+                        // Reload tabel atau halaman setelah sedikit delay
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
                     } else {
-                        Swal.fire("Gagal!", "Data gagal disimpan!", "error");
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Data gagal disimpan!',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
                     }
                 },
                 error: function(xhr) {
