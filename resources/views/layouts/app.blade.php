@@ -37,6 +37,8 @@
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
 
 </head>
 <!-- [Head] end -->
@@ -84,22 +86,7 @@
         </div>
     </div>
     <!-- [ Main Content ] end -->
-    <footer class="pc-footer">
-        <div class="footer-wrapper container-fluid">
-            <div class="row">
-                <div class="col-sm my-1">
-                    <p class="m-0">Mantis &#9829; crafted by Team <a
-                            href="https://themeforest.net/user/codedthemes" target="_blank">Codedthemes</a>
-                        Distributed by <a href="https://themewagon.com/">ThemeWagon</a>.</p>
-                </div>
-                <div class="col-auto my-1">
-                    <ul class="list-inline footer-link mb-0">
-                        <li class="list-inline-item"><a href="../index.html">Home</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('layouts.footer')
 
     <!-- [Page Specific JS] start -->
     {{-- <script src="../assets/js/plugins/apexcharts.min.js"></script> --}}
@@ -109,6 +96,8 @@
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
         <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>

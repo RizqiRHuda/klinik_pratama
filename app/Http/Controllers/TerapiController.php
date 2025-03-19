@@ -12,6 +12,11 @@ class TerapiController extends Controller
         return view('admin.terapi.index_terapi');
     }
 
+    public function indexRiwayat()
+    {
+        return view('admin.terapi.table_riwayat');
+    }
+
     public function cariPasien($no_rm)
     {
         $pasien = Pasien::where('no_rm', $no_rm)->first();

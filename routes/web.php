@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('terapi')->group(function () {
         Route::get('/page-terapi', [TerapiController::class, 'index'])->name('terapi.page-terapi');
         Route::get('/cari-pasien/{no_rm}', [TerapiController::class, 'cariPasien'])->name('terapi.cari-pasien');
-        
+        Route::get('/table-terapi', [TerapiController::class, 'indexRiwayat'])->name('terapi.table-terapi');
        
     });
 });
