@@ -30,7 +30,7 @@
               <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalObat">
                 <i class="fas fa-file-alt"></i> Tambah
               </button>
-                @include('admin.obat.form')
+             
                 <button type="button" class="btn btn-info btn-sm"  data-bs-toggle="modal" data-bs-target="#uploadExcelModal"> <i class="fas fa-file-excel me-1"></i> Upload Excel</button>
             </div>
         </div>
@@ -92,6 +92,7 @@
       </div>
   </div>
 </div>
+@include('admin.obat.form')
 @include('admin.obat.edit_obat')
     @push('scripts')
     <script>
@@ -144,11 +145,25 @@
             ]
         });
 
-        // Form Submit Tambah Obat
+        $('#modalObat').on('hidden.bs.modal', function () {
+            $(this).find("form")[0].reset(); 
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open'); 
+        });
+
+        // 🔹 Pastikan Modal Bisa Dibuka
+        $('#tambahObatBtn').on('click', function() {
+            $('.modal-backdrop').remove();
+            $('#modalObat').modal('show'); 
+        });
+
+    // 🔹 Form Submit Tambah Obat
         $("#formObat").submit(function(e) {
             e.preventDefault(); // Hindari reload halaman
-
             let formData = new FormData(this);
+            let btnSubmit = $("#formObat button[type=submit]");
+            
+            btnSubmit.prop("disabled", true).text("Menyimpan...");
 
             $.ajax({
                 url: "{{ route('obat.simpan-obat') }}",
@@ -159,20 +174,22 @@
                 dataType: "json",
                 success: function(response) {
                     if (response.success) {
-                        $("#modalObat form").modal('hide'); // Tutup modal
-                        $("#formObat")[0].reset(); // Reset form
-                        table.ajax.reload(); // Reload DataTables
-                        alert(response.message); // Notifikasi sukses
+                        Swal.fire("Berhasil!", response.message, "success");
+                        $("#modalObat").modal('hide');
+                        table.draw(false);
                     } else {
-                        alert("Gagal menyimpan data!");
+                        Swal.fire("Gagal!", "Data gagal disimpan!", "error");
                     }
                 },
                 error: function(xhr) {
-                    alert("Terjadi kesalahan: " + xhr.responseJSON.message);
+                    Swal.fire("Terjadi Kesalahan!", xhr.responseJSON.message, "error");
+                },
+                complete: function() {
+                    btnSubmit.prop("disabled", false).text("Simpan");
                 }
             });
         });
-
+        
         $('#table-obat').on('click', '.edit', function(){
             let id = $(this).data('id');
             $.get("{{ url('obat/edit') }}/" + id, function(data) {
