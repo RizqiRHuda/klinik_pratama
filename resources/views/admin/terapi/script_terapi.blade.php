@@ -11,6 +11,7 @@
                     success: function(data) {
                         if (data) {
                             // Isi input field dengan data pasien
+                            $(".id_pasien").val(data.id);
                             $("#data_no_rm").val(data.no_rm);
                             $("#data_nama_pasien").val(data.nama_pasien);
                             $("#data_nik").val(data.nik);
@@ -60,40 +61,65 @@
             }
         });
 
+        // Inisialisasi datepicker
         $('#datepicker').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true,
             todayHighlight: true,
-            clearBtn: true,       
+            clearBtn: true,
             todayBtn: "linked",
-            language: 'id'  
+            language: 'id'
         });
 
+        // Fungsi untuk mengisi dropdown dengan data obat
+        function fillDropdown(selectElement, data) {
+            selectElement.empty().append('<option value="">Pilih Obat</option>');
+            data.forEach(function(obat) {
+                selectElement.append(`<option value="${obat.id}">${obat.nama_obat}</option>`);
+            });
+            selectElement.select2({
+                width: '100%'
+            }); // Inisialisasi select2
+        }
+
+        // AJAX untuk mengambil data obat
+        $.ajax({
+            url: '{{ route('terapi.obat-terapi') }}',
+            method: 'GET',
+            success: function(data) {
+                window.obatData = data; // Simpan data obat ke variabel global
+                fillDropdown($(".select-obat").first(), data); // Isi dropdown pertama
+            },
+            error: function(xhr, status, error) {
+                console.error("Terjadi kesalahan: ", error);
+            }
+        });
+
+        // Event untuk menambahkan baris baru
         $(document).on('click', '.btn-add', function() {
             let row = `
                 <tr>
                     <td>
-                        <select class="form-select obat select-obat" name="obat[]" required>
+                        <select class="form-select obat select-obat" name="obat[]" >
                             <option value="">Pilih Obat</option>
-                            <option value="Paracetamol">Paracetamol</option>
-                            <option value="Amoxicillin">Amoxicillin</option>
-                            <option value="Ibuprofen">Ibuprofen</option>
                         </select>
                     </td>
                     <td>
-                        <input type="number" class="form-control pengeluaran" name="pengeluaran[]" placeholder="0" required>
+                        <input type="number" class="form-control pengeluaran" name="pengeluaran[]" placeholder="0" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-remove">-</button>
                     </td>
                 </tr>
             `;
-
             $('#obat-container').append(row);
-            $(".select-obat").select2({ width: '100%' }); // Terapkan Select2 pada elemen baru
+
+            // Isi dropdown yang baru ditambahkan dengan data obat
+            let newSelect = $('#obat-container .select-obat').last();
+            fillDropdown(newSelect, window.obatData);
         });
 
-        // Event Hapus Baris Obat (jika hanya ada 1 baris, tidak bisa dihapus)
+        // Event untuk menghapus baris
         $(document).on('click', '.btn-remove', function() {
             if ($("#obat-container tr").length > 1) {
                 $(this).closest('tr').remove();
@@ -108,8 +134,6 @@
             }
         });
 
-        // Inisialisasi Select2 untuk pencarian obat
-        $(".select-obat").select2({ width: '100%' });
-
+     
     });
 </script>

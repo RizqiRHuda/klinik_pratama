@@ -102,30 +102,31 @@
 
                     </div>
                     <div class="card-body">
-                        <form>
-                        <h5 class="mt-2 text-center">Formulir Data Terapi</h5>
-                        <hr>
-                        <div class="row align-items-center justify-content-between">
-                            <div class="col-md-3">
-                                <label class="form-label" for="">Tanggal</label>
-                                <input type="text" id="datepicker" name="tanggal" class="form-control" required>
-                            </div>
-                            <div class="col-md-3 text-start">
-                                <label class="form-label" for="">Jenis Layanan</label>
-                                <div class="btn-group" role="group" aria-label="Jenis Pelayanan">
-                                    <input type="radio" class="btn-check" name="jenis_pelayanan" id="rujuk" value="rujuk" required>
-                                    <label class="btn btn-outline-primary btn-sm" for="rujuk">Rujuk</label>
-                            
-                                    <input type="radio" class="btn-check" name="jenis_pelayanan" id="rawat_jalan" value="rawat_jalan" required>
-                                    <label class="btn btn-outline-primary btn-sm" for="rawat_jalan">Rawat Jalan</label>
-                            
-                                    <input type="radio" class="btn-check" name="jenis_pelayanan" id="batal" value="" required>
-                                    <label class="btn btn-outline-primary btn-sm" for="batal">Batal</label>
+                        <form id="formterapi" >
+                            @csrf
+                            <h5 class="mt-2 text-center">Formulir Data Terapi</h5>
+                            <hr>
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-md-3">
+                                    <input type="hidden" class="form-control id_pasien" id="id_pasien" name="id_pasien" >
+                                    <label class="form-label" for="">Tanggal</label>
+                                    <input type="text" id="datepicker" name="tgl_terapi" class="form-control" >
+                                </div>
+                                <div class="col-md-3 text-start">
+                                    <label class="form-label" for="">Jenis Layanan</label>
+                                    <div class="btn-group" role="group" aria-label="Jenis Pelayanan">
+                                        <input type="radio" class="btn-check" name="jenis_pelayanan" id="rujuk" value="rujuk" >
+                                        <label class="btn btn-outline-primary btn-sm" for="rujuk">Rujuk</label>
+                    
+                                        <input type="radio" class="btn-check" name="jenis_pelayanan" id="rawat_jalan" value="rawat_jalan" >
+                                        <label class="btn btn-outline-primary btn-sm" for="rawat_jalan">Rawat Jalan</label>
+                    
+                                        <input type="radio" class="btn-check" name="jenis_pelayanan" id="batal" value="batal" >
+                                        <label class="btn btn-outline-primary btn-sm" for="batal">Batal</label>
+                                    </div>
                                 </div>
                             </div>
-                            
-                        </div>
-                        
+                    
                             <div class="row mt-2">
                                 <div class="form-group col-md-6">
                                     <label class="form-label" for="">Anamnesa</label>
@@ -133,37 +134,38 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="form-label" for="diagnosa">Diagnosa</label>
-                                    <input type="text" class="form-control" id="diagnosa">
+                                    <input type="text" class="form-control" id="diagnosa" name="diagnosa">
                                 </div>
                             </div>
+                            
                             <h5 class="mt-2">Pemeriksaan</h5>
                             <div class="row">
                                 <div class="col-md-2">
                                     <label class="form-label">TB (cm)</label>
-                                    <input type="text" class="form-control" name="tb" >
+                                    <input type="text" class="form-control" name="tb">
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">BB (kg)</label>
-                                    <input type="text" class="form-control" name="bb" >
+                                    <input type="text" class="form-control" name="bb">
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Suhu (°C)</label>
-                                    <input type="text" class="form-control" name="suhu" >
+                                    <input type="text" class="form-control" name="suhu">
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Tensi (mmHg)</label>
-                                    <input type="text" class="form-control" name="tensi" >
+                                    <input type="text" class="form-control" name="tensi">
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Nadi (bpm)</label>
-                                    <input type="text" class="form-control" name="nadi" >
+                                    <input type="text" class="form-control" name="nadi">
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Pernafasan (x/menit)</label>
-                                    <input type="text" class="form-control" name="pernafasan" >
+                                    <input type="text" class="form-control" name="pernafasan">
                                 </div>
                             </div>
-                          
+                    
                             <div class="row">
                                 <div class="col-md-12">
                                     <h5 class="mt-3">Pengobatan</h5>
@@ -179,15 +181,14 @@
                                             <tbody id="obat-container">
                                                 <tr>
                                                     <td>
-                                                        <select class="form-select obat select-obat" name="obat[]" required>
+                                                        <select class="form-select obat select-obat" name="obat[]" >
                                                             <option value="">Pilih Obat</option>
-                                                            <option value="Paracetamol">Paracetamol</option>
-                                                            <option value="Amoxicillin">Amoxicillin</option>
-                                                            <option value="Ibuprofen">Ibuprofen</option>
+                                                            <!-- Populate with available drugs dynamically -->
+                                                           
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <input type="number" class="form-control pengeluaran" name="pengeluaran[]" placeholder="0" required>
+                                                        <input type="number" class="form-control pengeluaran" name="pengeluaran[]" placeholder="0" >
                                                     </td>
                                                     <td>
                                                         <button type="button" class="btn btn-success btn-add">+</button>
@@ -198,14 +199,13 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                           
+                    
                             <div class="d-flex justify-content-end mt-3">
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                             </div>
-                            
                         </form>
                     </div>
+                    
 
                 </div>
             </div>
@@ -214,5 +214,40 @@
     </div>
 @push('scripts')
 @include('admin.terapi.script_terapi')
+<script>
+    $(document).ready(function() {
+        // Ketika form disubmit
+        $('#formterapi').submit(function(e) {
+            e.preventDefault(); // Mencegah halaman reload saat submit form
+
+            var formData = new FormData(this); // Mengambil data form
+
+            // Kirim data dengan AJAX
+            $.ajax({
+    url: '{{ route('terapi.simpan-terapi') }}',
+    type: 'POST',
+    data: formData,
+    contentType: false,
+    processData: false,
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function(response) {
+        if (response.success) {
+            alert(response.message); // Menampilkan pesan sukses dari response
+            $('#formterapi')[0].reset(); // Reset form jika diperlukan
+        } else {
+            alert(response.message); // Menampilkan pesan error dari response
+        }
+    },
+    error: function(xhr, status, error) {
+        alert('Terjadi kesalahan saat menyimpan data!');
+    }
+});
+
+        });
+    });
+</script>
+
 @endpush
 @endsection

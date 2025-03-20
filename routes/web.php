@@ -58,6 +58,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/page-terapi', [TerapiController::class, 'index'])->name('terapi.page-terapi');
         Route::get('/cari-pasien/{no_rm}', [TerapiController::class, 'cariPasien'])->name('terapi.cari-pasien');
         Route::get('/table-terapi', [TerapiController::class, 'indexRiwayat'])->name('terapi.table-terapi');
-       
+        Route::get('/obat-terapi', [TerapiController::class, 'getObat'])->name('terapi.obat-terapi');
+        Route::post('/simpan-terapi', [TerapiController::class, 'simpan'])->name('terapi.simpan-terapi');
+        Route::get('/get-pasienTerapi', [TerapiController::class, 'getPasien'])->name('terapi.get-pasienTerapi');
     });
 });
