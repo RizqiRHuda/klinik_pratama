@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('pemeriksaan'); // Menyimpan JSON (tb, bb, suhu, dll.)
             $table->text('diagnosa');
             $table->text('pengobatan')->nullable();
+            $table->string('tindakan')->nullable();
             $table->foreignId('id_jenis_layanan')->constrained('jenis_layanan')->nullable();
             $table->timestamps();
         });

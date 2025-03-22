@@ -5,6 +5,7 @@ use App\Http\Controllers\ObatController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\TerapiController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/', function () {
@@ -22,9 +23,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/dashboard/admin', function () {
-        return view('layouts.app');
-    })->name('dashboard.admin');
+    Route::get('/dashboard/admin', [DashboardController::class, 'index'])->name('dashboard.admin');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -62,4 +61,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/simpan-terapi', [TerapiController::class, 'simpan'])->name('terapi.simpan-terapi');
         Route::get('/get-pasienTerapi', [TerapiController::class, 'getPasien'])->name('terapi.get-pasienTerapi');
     });
+
+    // Route::prefix('dashboard')->group(function(){
+    //     Route::get('/page-index', [DashboardController::class, 'countPasienDay'])->name('dashboard.countday');
+    // });
 });

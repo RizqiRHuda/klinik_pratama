@@ -128,13 +128,17 @@
                             </div>
                     
                             <div class="row mt-2">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label class="form-label" for="">Anamnesa</label>
                                     <input type="text" class="form-control" id="anamnesa" name="anamnesa">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label class="form-label" for="diagnosa">Diagnosa</label>
                                     <input type="text" class="form-control" id="diagnosa" name="diagnosa">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="form-label" for="tindakan">Tindakan</label>
+                                    <input type="text" class="form-control" id="tindakan" name="tindakan">
                                 </div>
                             </div>
                             

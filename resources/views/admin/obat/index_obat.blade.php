@@ -147,17 +147,6 @@
             ]
         });
 
-        $('#modalObat').on('hidden.bs.modal', function () {
-            $(this).find("form")[0].reset(); 
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open'); 
-        });
-
-        // 🔹 Pastikan Modal Bisa Dibuka
-        $('#tambahObatBtn').on('click', function() {
-            $('.modal-backdrop').remove();
-            $('#modalObat').modal('show'); 
-        });
 
     // 🔹 Form Submit Tambah Obat
         $("#formObat").submit(function(e) {
@@ -186,16 +175,9 @@
                         });
 
                         // Tutup modal setelah toast muncul
-                        let modalElement = document.getElementById('modalObat');
-                        let modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        if (modalInstance) {
-                            modalInstance.hide();
-                        }
+                        $('#createCloseButton').click()
 
-                        // Reload tabel atau halaman setelah sedikit delay
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#table-obat').DataTable().ajax.reload();
                     } else {
                         Swal.fire({
                             toast: true,
@@ -208,6 +190,7 @@
                     }
                 },
                 error: function(xhr) {
+                    $('#createCloseButton').click()
                     Swal.fire("Terjadi Kesalahan!", xhr.responseJSON.message, "error");
                 },
                 complete: function() {

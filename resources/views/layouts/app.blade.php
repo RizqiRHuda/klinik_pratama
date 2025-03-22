@@ -108,7 +108,7 @@
     <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
     <script src="{{ asset('assets/js/pcoded.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 @stack('scripts')

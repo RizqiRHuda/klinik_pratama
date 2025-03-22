@@ -19,64 +19,62 @@ class TerapiController extends Controller
     }
 
     public function indexRiwayat(Request $request)
-{
-    if ($request->ajax()) {
-        $terapis = Terapi::with('pasien', 'jenisLayanan', 'obat');  // Start the query builder, no `get()` yet
+    {
+        if ($request->ajax()) {
+            $terapis = Terapi::with('pasien', 'jenisLayanan', 'obat'); // Start the query builder, no `get()` yet
 
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $terapis->whereBetween('tgl_terapi', [
-                Carbon::parse($request->start_date)->startOfDay(),
-                Carbon::parse($request->end_date)->endOfDay(),
-            ]);
+            if ($request->has('start_date') && $request->has('end_date')) {
+                $terapis->whereBetween('tgl_terapi', [
+                    Carbon::parse($request->start_date)->startOfDay(),
+                    Carbon::parse($request->end_date)->endOfDay(),
+                ]);
+            }
+
+            if ($request->has('no_rm') && $request->no_rm) {
+                $terapis->whereHas('pasien', function ($query) use ($request) {
+                    $query->where('no_rm', $request->no_rm);
+                });
+            }
+
+            $terapis = $terapis->get(); // Now you can call `get()` after applying your filters
+
+            return DataTables::of($terapis)
+                ->addIndexColumn()
+                ->editColumn('tgl_terapi', function ($row) {
+                    return $row->tgl_terapi ? \Carbon\Carbon::parse($row->tgl_terapi)->format('d-m-Y') : '-';
+                })
+                ->editColumn('jenisLayanan', function ($row) {
+                    return $row->jenisLayanan == 'rujuk' ? 'Rujuk' : 'Rawat Jalan';
+                })
+                ->editColumn('pemeriksaan', function ($row) {
+                    $pemeriksaan = json_decode($row->pemeriksaan, true);
+                    $output      = '<ul>';
+                    $output .= '<li>TB: ' . ($pemeriksaan['tb'] ?? '-') . ' cm</li>';
+                    $output .= '<li>BB: ' . ($pemeriksaan['bb'] ?? '-') . ' kg</li>';
+                    $output .= '<li>Suhu: ' . ($pemeriksaan['suhu'] ?? '-') . ' °C</li>';
+                    $output .= '<li>Tensi: ' . ($pemeriksaan['tensi'] ?? '-') . ' mmHg</li>';
+                    $output .= '<li>Nadi: ' . ($pemeriksaan['nadi'] ?? '-') . ' bpm</li>';
+                    $output .= '<li>Pernafasan: ' . ($pemeriksaan['pernafasan'] ?? '-') . ' x/menit</li>';
+                    $output .= '</ul>';
+                    return $output;
+                })
+                ->addColumn('obat', function ($row) {
+                    if ($row->obat->isEmpty()) {
+                        return 'Tidak ada obat';
+                    }
+
+                    $obatList = '';
+                    foreach ($row->obat as $obat) {
+                        $obatList .= '-' . $obat->nama_obat . ' [' . $obat->pivot->jumlah_obat . ' ' . $obat->satuan . ']<br>';
+                    }
+                    return $obatList;
+                })
+                ->rawColumns(['pemeriksaan', 'obat'])
+                ->make(true);
         }
 
-        if ($request->has('no_rm') && $request->no_rm) {
-            $terapis->whereHas('pasien', function($query) use ($request) {
-                $query->where('no_rm', $request->no_rm);
-            });
-        }
-
-        $terapis = $terapis->get();  // Now you can call `get()` after applying your filters
-
-        return DataTables::of($terapis)
-            ->addIndexColumn()
-            ->editColumn('tgl_terapi', function ($row) {
-                return $row->tgl_terapi ? \Carbon\Carbon::parse($row->tgl_terapi)->format('d-m-Y') : '-';
-            })
-            ->editColumn('jenisLayanan', function ($row) {
-                return $row->jenisLayanan == 'rujuk' ? 'Rujuk' : 'Rawat Jalan';
-            })
-            ->editColumn('pemeriksaan', function ($row) {
-                $pemeriksaan = json_decode($row->pemeriksaan, true);
-                $output      = '<ul>';
-                $output .= '<li>TB: ' . ($pemeriksaan['tb'] ?? '-') . ' cm</li>';
-                $output .= '<li>BB: ' . ($pemeriksaan['bb'] ?? '-') . ' kg</li>';
-                $output .= '<li>Suhu: ' . ($pemeriksaan['suhu'] ?? '-') . ' °C</li>';
-                $output .= '<li>Tensi: ' . ($pemeriksaan['tensi'] ?? '-') . ' mmHg</li>';
-                $output .= '<li>Nadi: ' . ($pemeriksaan['nadi'] ?? '-') . ' bpm</li>';
-                $output .= '<li>Pernafasan: ' . ($pemeriksaan['pernafasan'] ?? '-') . ' x/menit</li>';
-                $output .= '</ul>';
-                return $output;
-            })
-            ->addColumn('obat', function ($row) {
-                if ($row->obat->isEmpty()) {
-                    return 'Tidak ada obat';
-                }
-
-                $obatList = '';
-                foreach ($row->obat as $obat) {
-                    $obatList .= '-' . $obat->nama_obat . ' [' . $obat->pivot->jumlah_obat . ' ' . $obat->satuan . ']<br>';
-                }
-                return $obatList;
-            })
-            ->rawColumns(['pemeriksaan', 'obat'])
-            ->make(true);
+        return view('admin.terapi.table_riwayat');
     }
-
-    return view('admin.terapi.table_riwayat');
-}
-
-    
 
     public function cariPasien($no_rm)
     {
@@ -97,6 +95,7 @@ class TerapiController extends Controller
 
     public function simpan(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $jenisPelayananMap = [
@@ -117,6 +116,7 @@ class TerapiController extends Controller
                 'id_pasien'        => $request->id_pasien,
                 'tgl_terapi'       => $request->tgl_terapi,
                 'anamnesa'         => $request->anamnesa,
+                'tindakan'      => $request->tindakan,
                 'pemeriksaan'      => json_encode([
                     'tb'         => $request->tb,
                     'bb'         => $request->bb,
@@ -177,7 +177,7 @@ class TerapiController extends Controller
     public function getPasien(Request $request)
     {
         $pasien = Pasien::select('no_rm', 'nama_pasien')
-            ->where('nama_pasien', 'like', '%' . $request->q . '%') 
+            ->where('nama_pasien', 'like', '%' . $request->q . '%')
             ->get();
 
         return response()->json($pasien);
