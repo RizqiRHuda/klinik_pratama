@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ObatController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\TerapiController;
-use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/', function () {
@@ -62,7 +62,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/get-pasienTerapi', [TerapiController::class, 'getPasien'])->name('terapi.get-pasienTerapi');
     });
 
-    // Route::prefix('dashboard')->group(function(){
-    //     Route::get('/page-index', [DashboardController::class, 'countPasienDay'])->name('dashboard.countday');
-    // });
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/export-obat-order', [DashboardController::class, 'exportObatOrder']);
+    });
 });
