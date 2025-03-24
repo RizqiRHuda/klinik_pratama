@@ -12,7 +12,6 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $data = Terapi::select('anamnesa')->get();
-        dd($data);
         $date = $request->input('date', today());
 
         $terapi_rujuk = Terapi::where('id_jenis_layanan', 1)
