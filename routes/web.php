@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\TerapiController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -17,9 +18,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/dashboard/super_admin', function () {
-        return view('layouts.app');
-    })->name('dashboard.super_admin');
+    Route::get('/dashboard/super_admin', [DashboardController::class, 'index'])->name('dashboard.super_admin');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -27,9 +26,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/dashboard/user', function () {
-        return view('layouts.app');
-    })->name('dashboard.user');
+    // Route::get('/dashboard/user', function () {
+    //     return view('layouts.app');
+    // })->name('dashboard.user');
+    Route::get('/dashboard/user', [DashboardController::class, 'index'])->name('dashboard.user');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -65,4 +65,14 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/export-obat-order', [DashboardController::class, 'exportObatOrder']);
     });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/index', [UserController::class, 'index'])->name('users.index');
+        Route::get('/get-user', [UserController::class, 'getUser'])->name('users.get-user');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('edit/{id}', [UserController::class, 'edit'])->name('users.edit-user');
+        Route::put('update/{id}', [UserController::class, 'update'])->name('users.update-user');
+        Route::delete('hapus/{id}', [UserController::class, 'destroy'])->name('users.hapus-user');
+    });
+
 });

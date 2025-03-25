@@ -9,9 +9,19 @@
                 </div>
             </a>
         </div>
-        @if (auth()->check() && (auth()->user()->role == 'super_admin' || auth()->user()->role == 'admin'))
+     
         <div class="navbar-content">
             <ul class="pc-navbar">
+                @if (auth()->check() && auth()->user()->role == 'super_admin')
+                <li class="pc-item">
+                    <a href="{{ route('users.index') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-users"></i></span>
+                        <span class="pc-mtext">Users Management</span>
+                    </a>
+                </li>
+                @endif
+
+                @if (auth()->check() && (auth()->user()->role == 'super_admin' || auth()->user()->role == 'admin'))
                 <li class="pc-item">
                     <a href="{{ route('dashboard.' . auth()->user()->role) }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
@@ -40,8 +50,22 @@
                         <span class="pc-mtext">Obat</span>
                     </a>
                 </li>
+                @endif
+                @if (auth()->check() && auth()->user()->role == 'user')
+                <li class="pc-item">
+                    <a href="{{ route('dashboard.' . auth()->user()->role) }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+                        <span class="pc-mtext">Dashboard</span>
+                    </a>
+                </li>
+                <li class="pc-item">
+                    <a href="{{ route('obat.page-obat') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-bandage"></i> </span>
+                        <span class="pc-mtext">Obat</span>
+                    </a>
+                </li>
+                @endif
             </ul>
         </div>
-        @endif
     </div>
 </nav>
