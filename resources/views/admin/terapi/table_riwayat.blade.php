@@ -28,12 +28,13 @@
                             <label for="filter-date-from" class="col-form-label me-2">Tanggal</label>
               
                             <div class="input-daterange input-group me-3">
-                                <input type="date" id="filter-date-from" class="form-control">
+                                <input type="date" id="filter-date-from" class="form-control form-control-sm">
                                 <span class="input-group-text">to</span>
-                                <input type="date" id="filter-date-to" class="form-control">
+                                <input type="date" id="filter-date-to" class="form-control form-control-sm">
                             </div>
-                
-                            <button type="button" class="btn btn-primary btn-sm" id="filter-date">Filter</button>
+                            
+                            <button type="button" class="btn btn-primary btn-sm" id="filter-date"><i class="ti ti-filter"></i></button>
+                            <button class="btn btn-success btn-sm ms-2" onclick="exportTerapi()"><i class="ti ti-file-export"></i></button>
                         </div>
                     </div>
             </div>
@@ -64,6 +65,7 @@
                             <th>Diagnosa</th>
                             <th>Pemeriksaan</th>
                             <th>Obat</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,6 +77,7 @@
         </div>
       </div>
   </div>
+  @include('admin.terapi.modal-detail')
 @push('scripts')
 <script>
     $(document).ready(function(){
@@ -101,7 +104,7 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route("terapi.table-terapi") }}',
-            order: [[1, 'asc']],
+            order: [[3, 'desc']],
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'pasien.no_rm', name: 'pasien.no_rm' },
@@ -111,7 +114,8 @@
                 { data: 'anamnesa', name: 'anamnesa' },
                 { data: 'diagnosa', name: 'diagnosa' },
                 { data: 'pemeriksaan', name: 'pemeriksaan', orderable: false, searchable: false },
-                { data: 'obat', name: 'obat', orderable: false, searchable: false }
+                { data: 'obat', name: 'obat', orderable: false, searchable: false },
+                { data: 'aksi', name: 'aksi', orderable: false, searchable: false } 
             ]
         });
 
@@ -136,6 +140,69 @@
       });
 
     });
+
+    function exportTerapi()
+    {
+        let from = document.getElementById('filter-date-from').value;
+        let to = document.getElementById('filter-date-to').value;
+        window.location.href = `/terapi/laporanTerapi?from=${from}&to=${to}`; 
+    }
+
+    function showDetail(id) {
+    $.ajax({
+        url: `/terapi/getData/${id}/detail`, 
+        type: 'GET',
+        success: function(response) {
+            let terapi = response.terapi;
+            let pasien = terapi.pasien;
+
+            // Set Data Pasien
+            $('#detail_no_rm').text(pasien.no_rm);
+            $('#detail_nama_pasien').text(pasien.nama_pasien);
+            $('#detail_nik').text(pasien.nik);
+            $('#detail_alamat').text(pasien.alamat);
+            $('#detail_no_hp').text(pasien.no_hp);
+            $('#detail_tgl_lahir').text(pasien.tgl_lahir);
+            $('#detail_jk').text(pasien.jk);
+            $('#detail_pekerjaan').text(pasien.pekerjaan);
+            $('#detail_riwayat_alergi').text(pasien.riwayat_alergi ?? '-');
+
+            // Set Data Terapi
+            $('#detail_tgl_terapi').text(terapi.tgl_terapi);
+            $('#detail_anamnesa').text(terapi.anamnesa);
+            $('#detail_diagnosa').text(terapi.diagnosa);
+            $('#detail_jenis_layanan').text(terapi.jenis_layanan.nama);
+
+            // Set Pemeriksaan
+            let pemeriksaanHtml = '';
+            if (terapi.pemeriksaan) {
+                let pemeriksaan = JSON.parse(terapi.pemeriksaan);
+                pemeriksaanHtml += `<li>TB: ${pemeriksaan.tb ?? '-'} cm</li>`;
+                pemeriksaanHtml += `<li>BB: ${pemeriksaan.bb ?? '-'} kg</li>`;
+                pemeriksaanHtml += `<li>Suhu: ${pemeriksaan.suhu ?? '-'} °C</li>`;
+                pemeriksaanHtml += `<li>Tensi: ${pemeriksaan.tensi ?? '-'} mmHg</li>`;
+                pemeriksaanHtml += `<li>Nadi: ${pemeriksaan.nadi ?? '-'} bpm</li>`;
+                pemeriksaanHtml += `<li>Pernafasan: ${pemeriksaan.pernafasan ?? '-'} x/menit</li>`;
+            }
+            $('#detail_pemeriksaan').html(pemeriksaanHtml);
+
+            // Set Data Obat
+            let obatHtml = '';
+            if (terapi.obat.length > 0) {
+                terapi.obat.forEach(obat => {
+                    obatHtml += `<li>${obat.nama_obat} [${obat.pivot.jumlah_obat} ${obat.satuan}]</li>`;
+                });
+            } else {
+                obatHtml = '<li>Tidak ada obat</li>';
+            }
+            $('#detail_obat').html(obatHtml);
+
+            // Tampilkan Modal
+            $('#modalDetailTerapi').modal('show');
+        }
+    });
+}
+
 </script>
 @endpush
 @endsection

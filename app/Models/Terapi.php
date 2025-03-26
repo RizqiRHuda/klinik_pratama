@@ -1,11 +1,11 @@
 <?php
 namespace App\Models;
 
+use App\Models\JenisLayanan;
 use App\Models\Obat;
 use App\Models\Pasien;
-use App\Models\JenisLayanan;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Terapi extends Model
 {
@@ -33,10 +33,9 @@ class Terapi extends Model
     //     return $this->hasMany(TerapiObat::class, 'id_terapi');
     // }
     public function obat()
-{
-    return $this->belongsToMany(Obat::class, 'terapi_obat', 'id_terapi', 'id_obat')
-                ->withPivot('jumlah_obat');
-}
+    {
+        return $this->belongsToMany(Obat::class, 'terapi_obat', 'id_terapi', 'id_obat')
+            ->withPivot('jumlah_obat');
+    }
 
-  
 }

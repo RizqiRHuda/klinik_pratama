@@ -60,6 +60,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/obat-terapi', [TerapiController::class, 'getObat'])->name('terapi.obat-terapi');
         Route::post('/simpan-terapi', [TerapiController::class, 'simpan'])->name('terapi.simpan-terapi');
         Route::get('/get-pasienTerapi', [TerapiController::class, 'getPasien'])->name('terapi.get-pasienTerapi');
+        Route::get('/laporanTerapi', [TerapiController::class, 'laporanTerapi'])->name('terapi.laporanTerapi');
+        Route::get('/getData/{id}/detail', [TerapiController::class, 'showDetail'])->name('terapi.detail');
+        Route::get('/laporanDetail/{id}', [TerapiController::class, 'laporanDetail'])->name('terapi.laporanDetail');
+
     });
 
     Route::prefix('dashboard')->group(function () {

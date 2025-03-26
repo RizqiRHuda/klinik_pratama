@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Exports\DataTerapiExport;
+use App\Exports\DetailTerapiExport;
 use App\Models\Obat;
 use App\Models\Pasien;
 use App\Models\Terapi;
@@ -9,6 +11,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class TerapiController extends Controller
@@ -36,7 +39,7 @@ class TerapiController extends Controller
                 });
             }
 
-            $terapis = $terapis->get(); // Now you can call `get()` after applying your filters
+            $terapis = $terapis->orderBy('tgl_terapi', 'desc')->get(); // Now you can call `get()` after applying your filters
 
             return DataTables::of($terapis)
                 ->addIndexColumn()
@@ -69,7 +72,11 @@ class TerapiController extends Controller
                     }
                     return $obatList;
                 })
-                ->rawColumns(['pemeriksaan', 'obat'])
+                ->addColumn('aksi', function ($row) {
+                    return '<button class="btn btn-warning btn-sm" onclick="showDetail(' . $row->id . ')"><i class="ti ti-eye"></i></button> '
+                    . '<a href="' . route('terapi.laporanDetail', $row->id) . '" class="btn btn-success btn-sm"> <i class="ti ti-table-export "></i></a>';
+                })
+                ->rawColumns(['pemeriksaan', 'obat', 'aksi'])
                 ->make(true);
         }
 
@@ -95,7 +102,6 @@ class TerapiController extends Controller
 
     public function simpan(Request $request)
     {
-        // dd($request->all());
         DB::beginTransaction();
         try {
             $jenisPelayananMap = [
@@ -116,7 +122,7 @@ class TerapiController extends Controller
                 'id_pasien'        => $request->id_pasien,
                 'tgl_terapi'       => $request->tgl_terapi,
                 'anamnesa'         => $request->anamnesa,
-                'tindakan'      => $request->tindakan,
+                'tindakan'         => $request->tindakan,
                 'pemeriksaan'      => json_encode([
                     'tb'         => $request->tb,
                     'bb'         => $request->bb,
@@ -143,17 +149,12 @@ class TerapiController extends Controller
                     ]);
 
                     $obat = Obat::findOrFail($id_obat);
-
                     $obat->pemakaian += $jumlah_obat;
-
                     $obat->updateStock(); // Memanggil updateStock() untuk menghitung stok_akhir
 
                 }
             }
-
             DB::commit();
-
-            // Jika AJAX request, kirimkan response JSON
             if ($request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Data terapi berhasil disimpan.']);
             }
@@ -163,13 +164,9 @@ class TerapiController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Jika AJAX request, kirimkan response JSON
             if ($request->ajax()) {
                 return response()->json(['success' => false, 'message' => 'Gagal menyimpan terapi: ' . $e->getMessage()]);
             }
-
-            // Jika bukan AJAX, redirect ke halaman sebelumnya dengan error
             return redirect()->back()->with('error', 'Gagal menyimpan terapi: ' . $e->getMessage());
         }
     }
@@ -181,6 +178,32 @@ class TerapiController extends Controller
             ->get();
 
         return response()->json($pasien);
+    }
+
+    public function laporanTerapi(Request $request)
+    {
+        $from = $request->query('from');
+        $to   = $request->query('to');
+
+        if (! $from || ! $to) {
+            return redirect()->back()->with('error', 'Silakan pilih tanggal terlebih dahulu.');
+        }
+
+        return Excel::download(new DataTerapiExport($from, $to), "Data_Terapi_Pasien_{$from}_to_{$to}.xlsx");
+    }
+
+    public function showDetail($id)
+    {
+        $terapi = Terapi::with('pasien', 'jenisLayanan', 'obat')->findOrFail($id);
+        return response()->json(['terapi' => $terapi]);
+    }
+
+    public function laporanDetail($id)
+    {
+        $terapi     = Terapi::with('pasien', 'jenisLayanan', 'obat')->findOrFail($id);
+        $namaPasien = str_replace(' ', '-', strtolower($terapi->pasien->nama_pasien));
+        $fileName   = "{$namaPasien}-laporan-terapi.xlsx";
+        return Excel::download(new DetailTerapiExport($terapi), $fileName);
     }
 
 }
