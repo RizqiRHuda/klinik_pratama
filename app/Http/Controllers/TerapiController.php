@@ -39,7 +39,7 @@ class TerapiController extends Controller
                 });
             }
 
-            $terapis = $terapis->orderBy('tgl_terapi', 'desc')->get(); // Now you can call `get()` after applying your filters
+            $terapis = $terapis->orderBy('id', 'desc')->get(); // Now you can call `get()` after applying your filters
 
             return DataTables::of($terapis)
                 ->addIndexColumn()
@@ -47,7 +47,7 @@ class TerapiController extends Controller
                     return $row->tgl_terapi ? \Carbon\Carbon::parse($row->tgl_terapi)->format('d-m-Y') : '-';
                 })
                 ->editColumn('jenisLayanan', function ($row) {
-                    return $row->jenisLayanan == 'rujuk' ? 'Rujuk' : 'Rawat Jalan';
+                    return $row->id_jenis_layanan == 1 ? 'Rujuk' : ($row->id_jenis_layanan === 2 ? 'Rawat Jalan' : '-');
                 })
                 ->editColumn('pemeriksaan', function ($row) {
                     $pemeriksaan = json_decode($row->pemeriksaan, true);
@@ -74,7 +74,7 @@ class TerapiController extends Controller
                 })
                 ->addColumn('aksi', function ($row) {
                     return '<button class="btn btn-warning btn-sm" onclick="showDetail(' . $row->id . ')"><i class="ti ti-eye"></i></button> '
-                    . '<a href="' . route('terapi.laporanDetail', $row->id) . '" class="btn btn-success btn-sm"> <i class="ti ti-table-export "></i></a>';
+                    . '<a href="' . route('terapi.laporanDetail', $row->id) . '" class="btn btn-success btn-sm"> <i class="fas fa-file-excel"></i></a>';
                 })
                 ->rawColumns(['pemeriksaan', 'obat', 'aksi'])
                 ->make(true);

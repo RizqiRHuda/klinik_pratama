@@ -38,11 +38,11 @@ class ObatController extends Controller
 
         $request->validate([
             'nama_obat'  => 'required|unique:obat,nama_obat',
-            'stock_awal' => 'required|integer',
-            'pemakaian'  => 'required|integer',
-            'pemasukan'  => 'required|integer',
-            'min_stock'  => 'required|integer',
-            'satuan'     => 'required|string',
+            'stock_awal' => 'nullable|integer',
+            'pemakaian'  => 'nullable|integer', // required
+            'pemasukan'  => 'nullable|integer',
+            'min_stock'  => 'nullable|integer',
+            'satuan'     => 'nullable|string',
         ]);
 
         DB::beginTransaction(); // Mulai transaksi
@@ -98,12 +98,12 @@ class ObatController extends Controller
         try {
             $data = $request->validate([
                 'nama_obat'  => 'required|string',
-                'stock_awal' => 'required|integer',
-                'pemakaian'  => 'required|integer',
-                'pemasukan'  => 'required|integer',
+                'stock_awal' => 'nullable|integer', // required
+                'pemakaian'  => 'nullable|integer',
+                'pemasukan'  => 'nullable|integer',
 
-                'min_stock'  => 'required|integer',
-                'satuan'     => 'required|string',
+                'min_stock'  => 'nullable|integer',
+                'satuan'     => 'nullable|string',
             ]);
 
             $obat                = Obat::findOrFail($id);

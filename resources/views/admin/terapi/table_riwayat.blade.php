@@ -34,7 +34,7 @@
                             </div>
                             
                             <button type="button" class="btn btn-primary btn-sm" id="filter-date"><i class="ti ti-filter"></i></button>
-                            <button class="btn btn-success btn-sm ms-2" onclick="exportTerapi()"><i class="ti ti-file-export"></i></button>
+                            <button class="btn btn-success btn-sm ms-2" onclick="exportTerapi()"><i class="fa-regular fa-file-excel"></i></button>
                         </div>
                     </div>
             </div>
@@ -49,7 +49,7 @@
                   </select>
               </div>
           
-              <button type="button" class="btn btn-primary btn-sm" id="filter-pasien-btn">Filter Pasien</button>
+              <button type="button" class="btn btn-primary btn-sm" id="filter-pasien-btn"> <i class="fas fa-filter"></i> Filter Pasien</button>
           </div>
         
             <div class="dt-responsive table-responsive">
