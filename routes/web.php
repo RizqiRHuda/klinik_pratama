@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoginController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ObatController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\TerapiController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RiwayatPasienController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/', function () {
@@ -63,7 +64,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporanTerapi', [TerapiController::class, 'laporanTerapi'])->name('terapi.laporanTerapi');
         Route::get('/getData/{id}/detail', [TerapiController::class, 'showDetail'])->name('terapi.detail');
         Route::get('/laporanDetail/{id}', [TerapiController::class, 'laporanDetail'])->name('terapi.laporanDetail');
+    });
 
+    Route::prefix('riwayat')->group(function (){
+        Route::get('/page-riwayat', [RiwayatPasienController::class, 'index'])->name('riwayat.page-riwayat');
+        Route::get('/get-riwayat/{no_rm}', [RiwayatPasienController::class, 'getRiwayat'])->name('riwayat.get-riwayat');
     });
 
     Route::prefix('dashboard')->group(function () {

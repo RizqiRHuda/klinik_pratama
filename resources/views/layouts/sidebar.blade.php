@@ -41,6 +41,7 @@
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{ route('terapi.page-terapi') }}">Form Terapi</a></li>
                         <li class="pc-item"><a class="pc-link" href="{{ route('terapi.table-terapi') }}">Table Riwayat</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('riwayat.page-riwayat') }}">Riwayat Personal</a></li>
                     </ul>
                 </li>
 
