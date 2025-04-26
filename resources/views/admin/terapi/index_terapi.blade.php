@@ -132,17 +132,9 @@
                         </div>
 
                         <div class="row mt-2">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-12">
                                 <label class="form-label" for="">Anamnesa</label>
                                 <input type="text" class="form-control" id="anamnesa" name="anamnesa">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label class="form-label" for="diagnosa">Diagnosa</label>
-                                <input type="text" class="form-control" id="diagnosa" name="diagnosa">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label class="form-label" for="tindakan">Tindakan</label>
-                                <input type="text" class="form-control" id="tindakan" name="tindakan">
                             </div>
                         </div>
 
@@ -171,6 +163,20 @@
                             <div class="col-md-2">
                                 <label class="form-label">Pernafasan (x/menit)</label>
                                 <input type="text" class="form-control" name="pernafasan">
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="form-group col-md-12">
+                                <label class="form-label" for="diagnosa">Diagnosa</label>
+                                <input type="text" class="form-control" id="diagnosa" name="diagnosa">
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="form-group col-md-12">
+                                <label class="form-label" for="tindakan">Terapi</label>
+                                <input type="text" class="form-control" id="tindakan" name="tindakan">
                             </div>
                         </div>
 
