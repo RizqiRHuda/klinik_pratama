@@ -176,9 +176,10 @@
                         <div class="row mt-2">
                             <div class="form-group col-md-12">
                                 <label class="form-label" for="tindakan">Terapi</label>
-                                <input type="text" class="form-control" id="tindakan" name="tindakan">
+                                <textarea class="form-control" id="tindakan" name="tindakan"></textarea>
                             </div>
                         </div>
+                        
 
                         <div class="row">
                             <div class="col-md-12">
